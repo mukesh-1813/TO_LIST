@@ -52,7 +52,11 @@ def add_task():
 
 @app.route('/complete/<int:task_id>')
 def complete_task(task_id):
-    task = Task.query.get_or_404(task_id)
+    task = Task.query.get(task_id)
+    if not task:
+        flash('Task not found or already deleted.', 'danger')
+        return redirect(url_for('index'))
+        
     task.is_completed = not task.is_completed
     db.session.commit()
     
@@ -62,7 +66,11 @@ def complete_task(task_id):
 
 @app.route('/delete/<int:task_id>', methods=['POST'])
 def delete_task(task_id):
-    task = Task.query.get_or_404(task_id)
+    task = Task.query.get(task_id)
+    if not task:
+        flash('Task not found or already deleted.', 'danger')
+        return redirect(url_for('index'))
+        
     db.session.delete(task)
     db.session.commit()
     
